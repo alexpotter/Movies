@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Movies</string>
+
+    <string-array name="movies_array">
+        <item>Frozen</item>
+        <item>Inception</item>
+    </string-array>
 </resources>
