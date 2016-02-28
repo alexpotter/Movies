@@ -6,12 +6,12 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,17 +19,25 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient client = new OkHttpClient();
 
-        Request request = new Request.Builder()
-                .url("https://api.github.com/users/codepath")
+        HttpUrl url = new HttpUrl.Builder()
+                .scheme("http")
+                .host("www.omdbapi.com")
+                .addQueryParameter("t", "Frozen")
                 .build();
+
+        Request request = new Request.Builder()
+                .url(url.toString())
+                .build();
+
+        Log.i("DEBUG", url.toString());
 
         try {
             Response response = client.newCall(request).execute();
             String responseData = response.body().string();
             JSONObject json = new JSONObject(responseData);
-            final String owner = json.getString("name");
+            final String title = json.getString("Title");
 
-            Log.i("DEBUG", owner);
+            Log.i("DEBUG", title);
         }
         catch (Exception e) {
             Log.i("DEBUG", e.getMessage());
