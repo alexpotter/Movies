@@ -8,9 +8,12 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -97,6 +100,22 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("DEBUG", year);
                     Log.d("DEBUG", plot);
                     Log.d("DEBUG", imdbId);
+
+                    setContentView(R.layout.display_film);
+
+                    final TextView movieTitle = (TextView) findViewById(R.id.filmTitle);
+                    movieTitle.setText("Film: " + title);
+
+                    final TextView movieYear = (TextView) findViewById(R.id.filmYear);
+                    movieYear.setText("Year: " + year);
+
+                    final TextView moviePlot = (TextView) findViewById(R.id.filmPlot);
+                    moviePlot.setText("Plot: " + plot);
+
+                    GridLayout movieLayout = (GridLayout) findViewById(R.id.movieContainer);
+                    movieLayout.computeScroll();  // replace 100 with your dimensions
+
+                    // NEED TO ALLOW INFINITE SCROLLING
                 }
                 catch (JSONException e) {
 
