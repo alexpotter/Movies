@@ -4,11 +4,12 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -16,7 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -75,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String results) {
             if (results != null) {
                 try {
+                    setContentView(R.layout.display_films);
+                    LinearLayout tableLayout = (LinearLayout)findViewById(R.id.tableLayout);
+
                     JSONObject jsonObject = new JSONObject(results);
 
                     //extracting data array from json string
@@ -86,8 +89,19 @@ public class MainActivity extends AppCompatActivity {
                     {
                         JSONObject film = films.getJSONObject(count);
 
-                        Log.d("DEBUG", film.getString("title"));
-                        Log.d("DEBUG", film.getString("release_date"));
+                        View tableRow = LayoutInflater.from(MainActivity.this).inflate(R.layout.display_films_table_row, null, false);
+
+                        TextView title  = (TextView) tableRow.findViewById(R.id.rowFilmTitle);
+                        title.setText(film.getString("title"));
+
+                        TextView plot  = (TextView) tableRow.findViewById(R.id.rowFilmPlot);
+                        plot.setText(film.getString("overview"));
+
+                        TextView year  = (TextView) tableRow.findViewById(R.id.rowFilmYear);
+                        year.setText("Released: " + film.getString("release_date"));
+
+                        tableLayout.addView(tableRow);
+
                         Log.d("DEBUG", film.getString("id"));
                     }
                 }
