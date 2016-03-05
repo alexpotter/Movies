@@ -9,13 +9,15 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -99,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
 
                         TextView year  = (TextView) tableRow.findViewById(R.id.rowFilmYear);
                         year.setText("Released: " + film.getString("release_date"));
+
+                        ImageView img = (ImageView) tableRow.findViewById(R.id.rowFilmImage);
+                        Picasso.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w185/" + film.getString("poster_path")).into(img);
 
                         tableLayout.addView(tableRow);
 
