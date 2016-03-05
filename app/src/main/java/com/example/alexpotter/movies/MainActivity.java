@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,23 +54,13 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             OkHttpClient client = new OkHttpClient();
 
-            HttpUrl url = new HttpUrl.Builder()
-                    .scheme("http")
-                    .host("www.omdbapi.com")
-                    .addQueryParameter("t", movieTitle)
-                    .build();
-
             Request request = new Request.Builder()
-                    .url(url)
+                    .url("https://api.themoviedb.org/3/search/movie?api_key=1888c83e4f4bbe98ecf4973b7db0f7c4&query=" + movieTitle)
                     .build();
-
-            Log.i("DEBUG", url.toString());
 
             try {
                 Response response = client.newCall(request).execute();
-                String responseData = response.body().string();
-
-                return responseData;
+                return response.body().string();
             }
             catch (IOException e) {
 
@@ -84,38 +75,21 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String results) {
             if (results != null) {
                 try {
-                    JSONObject json = new JSONObject(results);
-                    final String title = json.getString("Title");
-                    final String year = json.getString("Year");
-                    final String plot = json.getString("Plot");
-                    final String imdbId = json.getString("imdbID");
+                    JSONObject jsonObject = new JSONObject(results);
 
-                    if (json.getString("Response").equals("false"))
+                    //extracting data array from json string
+                    JSONArray films = jsonObject.getJSONArray("results");
+                    int length = jsonObject.length();
+
+                    //loop to get all json objects from data json array
+                    for(int count=0; count<length; count++)
                     {
-                        Log.d("DEBUG", "No movie found");
-                        return;
+                        JSONObject film = films.getJSONObject(count);
+
+                        Log.d("DEBUG", film.getString("title"));
+                        Log.d("DEBUG", film.getString("release_date"));
+                        Log.d("DEBUG", film.getString("id"));
                     }
-
-                    Log.d("DEBUG", title);
-                    Log.d("DEBUG", year);
-                    Log.d("DEBUG", plot);
-                    Log.d("DEBUG", imdbId);
-
-                    setContentView(R.layout.display_film);
-
-                    final TextView movieTitle = (TextView) findViewById(R.id.filmTitle);
-                    movieTitle.setText("Film: " + title);
-
-                    final TextView movieYear = (TextView) findViewById(R.id.filmYear);
-                    movieYear.setText("Year: " + year);
-
-                    final TextView moviePlot = (TextView) findViewById(R.id.filmPlot);
-                    moviePlot.setText("Plot: " + plot);
-
-                    GridLayout movieLayout = (GridLayout) findViewById(R.id.movieContainer);
-                    movieLayout.computeScroll();  // replace 100 with your dimensions
-
-                    // NEED TO ALLOW INFINITE SCROLLING
                 }
                 catch (JSONException e) {
 
