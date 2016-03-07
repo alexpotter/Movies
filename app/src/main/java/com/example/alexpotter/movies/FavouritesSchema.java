@@ -11,7 +11,7 @@ public class FavouritesSchema {
     public static abstract class Favourite implements BaseColumns {
         public static final String TABLE_NAME = "favourites";
         public static final String COLUMN_NAME_FILM_ID = "id";
-        public static final String COLUMN_NAME_FILE_TITLE = "title";
+        public static final String COLUMN_NAME_FILM_TITLE = "title";
         public static final String COLUMN_NAME_IMAGE_URL = "poster_url";
 
         public static final String TEXT_TYPE = " TEXT";
@@ -20,7 +20,7 @@ public class FavouritesSchema {
         private static final String SQL_CREATE_ENTRIES =
                 "CREATE TABLE " + Favourite.TABLE_NAME + " (" +
                         Favourite.COLUMN_NAME_FILM_ID + " INTEGER PRIMARY KEY," +
-                        Favourite.COLUMN_NAME_FILE_TITLE + TEXT_TYPE + COMMA_SEP +
+                        Favourite.COLUMN_NAME_FILM_TITLE + TEXT_TYPE + COMMA_SEP +
                         Favourite.COLUMN_NAME_IMAGE_URL + TEXT_TYPE +
                 " )";
 

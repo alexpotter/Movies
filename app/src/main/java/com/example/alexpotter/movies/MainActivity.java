@@ -1,5 +1,6 @@
 package com.example.alexpotter.movies;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -35,19 +36,32 @@ public class MainActivity extends AppCompatActivity {
     protected String searchText;
     protected List<String> searchResults = new ArrayList<>();
 
+    // Gets the data repository in write mode
+    private FavouritesSchema.Favourite.FavouriteDbHelper mDbHelper = new FavouritesSchema.Favourite.FavouriteDbHelper(this);
+    protected SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        FavouritesSchema.Favourite.FavouriteDbHelper mDbHelper = new FavouritesSchema.Favourite.FavouriteDbHelper(this);
-        // Gets the data repository in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         if (db.isOpen()) {
             Log.d("Debug", "Successfully connected to favourites db");
         }
 
         myActivity();
+    }
+
+    protected void addFavourite(String id, String title, String url) {
+        ContentValues values = new ContentValues();
+        values.put(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID, id);
+        values.put(FavouritesSchema.Favourite.COLUMN_NAME_FILM_TITLE, title);
+        values.put(FavouritesSchema.Favourite.COLUMN_NAME_IMAGE_URL, url);
+
+        // Insert the new row
+        db.insert(
+                FavouritesSchema.Favourite.TABLE_NAME,
+                null,
+                values);
     }
 
     private void myActivity() {
