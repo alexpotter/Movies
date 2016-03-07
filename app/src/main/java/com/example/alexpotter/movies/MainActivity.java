@@ -3,6 +3,7 @@ package com.example.alexpotter.movies;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
 
         final AutoCompleteTextView searchEditText = (AutoCompleteTextView)findViewById(R.id.autocomplete_movie);
 
@@ -149,6 +153,9 @@ public class MainActivity extends AppCompatActivity {
                     setContentView(R.layout.display_films);
                     LinearLayout filmList = (LinearLayout)findViewById(R.id.tableLayout);
 
+                    Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar1);
+                    setSupportActionBar(myToolbar);
+
                     int length = jsonObject.length();
 
                     //loop to get all json objects from data json array
@@ -177,8 +184,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    setContentView(R.layout.no_move_found);
+                    setContentView(R.layout.no_movie_found);
                     TextView noMovieFound = (TextView)findViewById(R.id.noMovieFound);
+
+                    Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar2);
+                    setSupportActionBar(myToolbar);
+
                     String error = "No films could be found.";
                     noMovieFound.setText(error);
                     Log.d("Debug", "I'm here!");

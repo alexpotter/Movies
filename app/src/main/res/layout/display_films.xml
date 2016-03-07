@@ -2,7 +2,8 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -13,10 +14,20 @@
         android:scrollbars="vertical"
         android:id="@+id/tableLayout">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/my_toolbar1"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="4dp"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
         <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:paddingTop="?attr/actionBarSize"
             android:paddingBottom="20dp"
             android:id="@+id/filmRow">
         </TableRow>
