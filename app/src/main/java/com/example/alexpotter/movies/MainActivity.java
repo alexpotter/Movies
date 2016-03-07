@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             if (results != null) {
                 try {
                     setContentView(R.layout.display_films);
-                    LinearLayout tableLayout = (LinearLayout)findViewById(R.id.tableLayout);
+                    LinearLayout filmList = (LinearLayout)findViewById(R.id.tableLayout);
 
                     JSONObject jsonObject = new JSONObject(results);
 
@@ -91,21 +91,21 @@ public class MainActivity extends AppCompatActivity {
                     {
                         JSONObject film = films.getJSONObject(count);
 
-                        View tableRow = LayoutInflater.from(MainActivity.this).inflate(R.layout.display_films_table_row, null, false);
+                        View filmItem = LayoutInflater.from(MainActivity.this).inflate(R.layout.display_film, null, false);
 
-                        TextView title  = (TextView) tableRow.findViewById(R.id.rowFilmTitle);
+                        TextView title  = (TextView) filmItem.findViewById(R.id.filmTitle);
                         title.setText(film.getString("title"));
 
-                        TextView plot  = (TextView) tableRow.findViewById(R.id.rowFilmPlot);
+                        TextView plot  = (TextView) filmItem.findViewById(R.id.filmPlot);
                         plot.setText(film.getString("overview"));
 
-                        TextView year  = (TextView) tableRow.findViewById(R.id.rowFilmYear);
+                        TextView year  = (TextView) filmItem.findViewById(R.id.filmYear);
                         year.setText("Released: " + film.getString("release_date"));
 
-                        ImageView img = (ImageView) tableRow.findViewById(R.id.rowFilmImage);
+                        ImageView img = (ImageView) filmItem.findViewById(R.id.filmPoster);
                         Picasso.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w185/" + film.getString("poster_path")).into(img);
 
-                        tableLayout.addView(tableRow);
+                        filmList.addView(filmItem);
 
                         Log.d("DEBUG", film.getString("id"));
                     }
