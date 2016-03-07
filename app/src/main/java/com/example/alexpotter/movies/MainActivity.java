@@ -1,8 +1,11 @@
 package com.example.alexpotter.movies;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,39 +22,103 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     protected String movieTitle;
+    protected String searchText;
+    protected List<String> searchResults = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get a reference to the AutoCompleteTextView in the layout
-        final AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autocomplete_movie);
-        // Get the string array
-        // Change to sql lite db or api if poss
-        String[] movies = getResources().getStringArray(R.array.movies_array);
-        // Create the adapter and set it to the AutoCompleteTextView
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, movies);
-        textView.setAdapter(adapter);
+        final AutoCompleteTextView searchEditText = (AutoCompleteTextView)findViewById(R.id.autocomplete_movie);
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                ArrayAdapter<String> adaptor = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, searchResults);
+                searchEditText.setAdapter(adaptor);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchText = s.toString();
+                new getFilmsWhileTyping().execute();
+            }
+        });
 
         Button button = (Button) findViewById(R.id.button_search);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                movieTitle = textView.getText().toString();
-                new MyAsyncTask().execute();
+                movieTitle = searchEditText.getText().toString();
+                new getFilmsFromSearch().execute();
             }
         });
     }
 
-    class MyAsyncTask extends AsyncTask<Void, Void, String> {
+    class getFilmsWhileTyping extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... Params)  {
+            OkHttpClient client = new OkHttpClient();
 
+            Request request = new Request.Builder()
+                    .url("https://api.themoviedb.org/3/search/movie?api_key=1888c83e4f4bbe98ecf4973b7db0f7c4&query=" + searchText)
+                    .build();
+
+            try {
+                Response response = client.newCall(request).execute();
+                return response.body().string();
+            }
+            catch (IOException e) {
+
+            }
+            catch (Exception e) {
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String results) {
+            if (results != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(results);
+
+                    //extracting data array from json string
+                    JSONArray films = jsonObject.getJSONArray("results");
+                    int length = jsonObject.length();
+
+                    //loop to get all json objects from data json array
+                    for (int count = 0; count < length; count++) {
+                        JSONObject film = films.getJSONObject(count);
+
+                        if(! searchResults.contains(film.getString("title"))) {
+                            searchResults.add(count, film.getString("title"));
+                        }
+                    }
+
+                    // Append array as autocomplete
+
+                } catch (JSONException e) {
+
+                }
+            }
+        }
+    }
+
+    class getFilmsFromSearch extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
             OkHttpClient client = new OkHttpClient();
