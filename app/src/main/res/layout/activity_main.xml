@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.alexpotter.movies.MainActivity">
 
     <android.support.v7.widget.Toolbar
@@ -13,8 +12,7 @@
         android:layout_height="?attr/actionBarSize"
         android:elevation="4dp"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        android:background="?attr/colorPrimary" />
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/favorites_grid"
