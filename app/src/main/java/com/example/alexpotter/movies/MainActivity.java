@@ -108,8 +108,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Append array as autocomplete
-
                 } catch (JSONException e) {
 
                 }
@@ -141,15 +139,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String results) {
-            if (results != null) {
-                try {
+            try {
+                JSONObject jsonObject = new JSONObject(results);
+
+                //extracting data array from json string
+                JSONArray films = jsonObject.getJSONArray("results");
+
+                if (films.length() > 0) {
                     setContentView(R.layout.display_films);
                     LinearLayout filmList = (LinearLayout)findViewById(R.id.tableLayout);
 
-                    JSONObject jsonObject = new JSONObject(results);
-
-                    //extracting data array from json string
-                    JSONArray films = jsonObject.getJSONArray("results");
                     int length = jsonObject.length();
 
                     //loop to get all json objects from data json array
@@ -176,13 +175,20 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("DEBUG", film.getString("id"));
                     }
                 }
-                catch (JSONException e) {
-
+                else
+                {
+                    setContentView(R.layout.no_move_found);
+                    TextView noMovieFound = (TextView)findViewById(R.id.noMovieFound);
+                    String error = "No films could be found.";
+                    noMovieFound.setText(error);
+                    Log.d("Debug", "I'm here!");
                 }
             }
-            else
-            {
-                // Catch no movies found;
+            catch(JSONException e) {
+
+            }
+            catch(Exception e) {
+
             }
         }
     }
