@@ -35,14 +35,15 @@ public class MainActivity extends AppCompatActivity {
     protected String movieTitle;
     protected String searchText;
     protected List<String> searchResults = new ArrayList<>();
-
-    // Gets the data repository in write mode
-    private FavouritesSchema.Favourite.FavouriteDbHelper mDbHelper = new FavouritesSchema.Favourite.FavouriteDbHelper(this);
-    protected SQLiteDatabase db = mDbHelper.getWritableDatabase();
+    protected SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Gets the data repository in write mode
+        FavouritesSchema.Favourite.FavouriteDbHelper mDbHelper = new FavouritesSchema.Favourite.FavouriteDbHelper(this);
+        db = mDbHelper.getWritableDatabase();
 
         if (db.isOpen()) {
             Log.d("Debug", "Successfully connected to favourites db");
