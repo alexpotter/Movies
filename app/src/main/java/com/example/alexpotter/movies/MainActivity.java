@@ -37,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myActivity();
+    }
+
+    private void myActivity() {
         setContentView(R.layout.activity_main);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -155,6 +159,15 @@ public class MainActivity extends AppCompatActivity {
 
                     Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar1);
                     setSupportActionBar(myToolbar);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+                    myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //What to do on back clicked
+                            myActivity();
+                        }
+                    });
 
                     int length = jsonObject.length();
 
@@ -189,10 +202,18 @@ public class MainActivity extends AppCompatActivity {
 
                     Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar2);
                     setSupportActionBar(myToolbar);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+                    myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //What to do on back clicked
+                            myActivity();
+                        }
+                    });
 
                     String error = "No films could be found.";
                     noMovieFound.setText(error);
-                    Log.d("Debug", "I'm here!");
                 }
             }
             catch(JSONException e) {
