@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         c.moveToFirst();
-        for (int count = 0; count < c.getCount(); count ++) {
+        while (c.moveToNext()) {
             View filmItem = LayoutInflater.from(MainActivity.this).inflate(R.layout.favourite, null, false);
 
             TextView title  = (TextView) filmItem.findViewById(R.id.favouriteTitle);
@@ -94,8 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
             ImageView imgPoster = (ImageView) filmItem.findViewById(R.id.favouritePoster);
             Picasso.with(getApplicationContext()).load(c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_IMAGE_URL))).into(imgPoster);
-
-            c.move(count);
 
             favouriteList.addView(filmItem);
         }
@@ -226,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                     //loop to get all json objects from data json array
                     for(int count=0; count<length; count++)
                     {
-                        JSONObject film = films.getJSONObject(count);
+                        final JSONObject film = films.getJSONObject(count);
 
                         View filmItem = LayoutInflater.from(MainActivity.this).inflate(R.layout.display_film, null, false);
 
@@ -242,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                         ImageView imgPoster = (ImageView) filmItem.findViewById(R.id.filmPoster);
                         Picasso.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w185/" + film.getString("poster_path")).into(imgPoster);
 
-                        ImageView imgLike = (ImageView) filmItem.findViewById(R.id.filmLike);
+                        final ImageView imgLike = (ImageView) filmItem.findViewById(R.id.filmLike);
 
                         // Check film is favourite
                         Cursor cursor = db.query(
@@ -264,7 +262,13 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     filmId = v.getId();
-                                    // DELETE FROM DB
+                                    Log.d("DEBUG", "Film id: " + Integer.toString(filmId));
+                                    db.delete(
+                                            FavouritesSchema.Favourite.TABLE_NAME,
+                                            FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID + " =? ",
+                                            new String[] { String.valueOf(Integer.toString(filmId)) }
+                                    );
+                                    imgLike.setImageResource(R.drawable.empty_heart);
                                 }
                             });
                         }
@@ -278,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(View v) {
                                     filmId = v.getId();
                                     new storeFavourite().execute();
+                                    imgLike.setImageResource(R.drawable.full_heart);
                                 }
                             });
                         }
