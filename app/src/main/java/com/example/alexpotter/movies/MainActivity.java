@@ -1,6 +1,7 @@
 package com.example.alexpotter.movies;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -74,6 +75,30 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         final AutoCompleteTextView searchEditText = (AutoCompleteTextView)findViewById(R.id.autocomplete_movie);
+
+        // Get favourites
+        String[] projection = {
+                FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID,
+                FavouritesSchema.Favourite.COLUMN_NAME_FILM_TITLE,
+                FavouritesSchema.Favourite.COLUMN_NAME_IMAGE_URL,
+        };
+
+        Cursor c = db.query(
+                FavouritesSchema.Favourite.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        c.moveToFirst();
+        for (int count = 1; count < c.getCount() + 1; count ++) {
+            Log.d("Debug", "ID: " + c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID)));
+            Log.d("Debug", c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_TITLE)));
+            c.move(count);
+        }
 
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -293,11 +318,19 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONObject film = new JSONObject(result);
 
-                    Log.d("Film id", "Title: " + filmId);
-                    Log.d("Film title", film.getString("title"));
+                    ContentValues values = new ContentValues();
+                    values.put(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID, filmId);
+                    values.put(FavouritesSchema.Favourite.COLUMN_NAME_FILM_TITLE, film.getString("title"));
+                    values.put(FavouritesSchema.Favourite.COLUMN_NAME_IMAGE_URL, "http://image.tmdb.org/t/p/w185/" + film.getString("poster_path"));
+
+                    db.insert(
+                            FavouritesSchema.Favourite.TABLE_NAME,
+                            null,
+                            values
+                    );
 
                 } catch (JSONException e) {
-
+                    
                 }
             }
         }
