@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                 null
         );
 
-        c.moveToFirst();
         while (c.moveToNext()) {
             View filmItem = LayoutInflater.from(MainActivity.this).inflate(R.layout.favourite, null, false);
 
