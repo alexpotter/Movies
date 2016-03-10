@@ -2,6 +2,7 @@ package com.example.alexpotter.movies;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -212,8 +213,11 @@ public class MainActivity extends AppCompatActivity {
                         TextView year  = (TextView) filmItem.findViewById(R.id.filmYear);
                         year.setText("Released: " + film.getString("release_date"));
 
-                        ImageView img = (ImageView) filmItem.findViewById(R.id.filmPoster);
-                        Picasso.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w185/" + film.getString("poster_path")).into(img);
+                        ImageView imgPoster = (ImageView) filmItem.findViewById(R.id.filmPoster);
+                        Picasso.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w185/" + film.getString("poster_path")).into(imgPoster);
+
+                        ImageView imgLike = (ImageView) filmItem.findViewById(R.id.filmLike);
+                        imgLike.setImageResource(R.drawable.empty_heart);
 
                         filmList.addView(filmItem);
 
