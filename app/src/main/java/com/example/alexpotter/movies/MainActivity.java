@@ -55,19 +55,6 @@ public class MainActivity extends AppCompatActivity {
         myActivity();
     }
 
-    protected void addFavourite(String id, String title, String url) {
-        ContentValues values = new ContentValues();
-        values.put(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID, id);
-        values.put(FavouritesSchema.Favourite.COLUMN_NAME_FILM_TITLE, title);
-        values.put(FavouritesSchema.Favourite.COLUMN_NAME_IMAGE_URL, url);
-
-        // Insert the new row
-        db.insert(
-                FavouritesSchema.Favourite.TABLE_NAME,
-                null,
-                values);
-    }
-
     private void myActivity() {
         setContentView(R.layout.activity_main);
 
@@ -75,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         final AutoCompleteTextView searchEditText = (AutoCompleteTextView)findViewById(R.id.autocomplete_movie);
+
+        TextView header = (TextView) findViewById(R.id.favouritesHeader);
+        header.setText("Favourites");
 
         LinearLayout favouriteList = (LinearLayout) findViewById(R.id.favourites);
 
@@ -96,9 +86,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         c.moveToFirst();
-        for (int count = 1; count < c.getCount() + 1; count ++) {
-            Log.d("Debug", "ID: " + c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID)));
-
+        for (int count = 0; count < c.getCount(); count ++) {
             View filmItem = LayoutInflater.from(MainActivity.this).inflate(R.layout.favourite, null, false);
 
             TextView title  = (TextView) filmItem.findViewById(R.id.favouriteTitle);
@@ -256,18 +244,43 @@ public class MainActivity extends AppCompatActivity {
 
                         ImageView imgLike = (ImageView) filmItem.findViewById(R.id.filmLike);
 
-                        // Make me dynamic!
-                        imgLike.setImageResource(R.drawable.empty_heart);
-                        imgLike.setId(film.getInt("id"));
+                        // Check film is favourite
+                        Cursor cursor = db.query(
+                                FavouritesSchema.Favourite.TABLE_NAME,
+                                new String[] { FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID },
+                                FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID + " = " + film.getString("id"),
+                                null,
+                                null,
+                                null,
+                                null
+                        );
 
-                        // Set event listener
-                        imgLike.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                filmId = v.getId();
-                                new storeFavourite().execute();
-                            }
-                        });
+                        if (cursor.getCount() > 0) {
+                            imgLike.setImageResource(R.drawable.full_heart);
+                            imgLike.setId(film.getInt("id"));
+
+                            // Set event listener
+                            imgLike.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    filmId = v.getId();
+                                    // DELETE FROM DB
+                                }
+                            });
+                        }
+                        else {
+                            imgLike.setImageResource(R.drawable.empty_heart);
+                            imgLike.setId(film.getInt("id"));
+
+                            // Set event listener
+                            imgLike.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    filmId = v.getId();
+                                    new storeFavourite().execute();
+                                }
+                            });
+                        }
 
                         filmList.addView(filmItem);
                     }
