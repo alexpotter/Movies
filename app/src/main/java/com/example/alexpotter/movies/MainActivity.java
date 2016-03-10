@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
         final AutoCompleteTextView searchEditText = (AutoCompleteTextView)findViewById(R.id.autocomplete_movie);
 
+        LinearLayout favouriteList = (LinearLayout) findViewById(R.id.favourites);
+
         // Get favourites
         String[] projection = {
                 FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID,
@@ -96,8 +98,18 @@ public class MainActivity extends AppCompatActivity {
         c.moveToFirst();
         for (int count = 1; count < c.getCount() + 1; count ++) {
             Log.d("Debug", "ID: " + c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID)));
-            Log.d("Debug", c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_TITLE)));
+
+            View filmItem = LayoutInflater.from(MainActivity.this).inflate(R.layout.favourite, null, false);
+
+            TextView title  = (TextView) filmItem.findViewById(R.id.favouriteTitle);
+            title.setText(c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_TITLE)));
+
+            ImageView imgPoster = (ImageView) filmItem.findViewById(R.id.favouritePoster);
+            Picasso.with(getApplicationContext()).load(c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_IMAGE_URL))).into(imgPoster);
+
             c.move(count);
+
+            favouriteList.addView(filmItem);
         }
 
         searchEditText.addTextChangedListener(new TextWatcher() {
