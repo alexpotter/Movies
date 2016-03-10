@@ -35,6 +35,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     protected String movieTitle;
     protected String searchText;
+    protected int filmId;
     protected List<String> searchResults = new ArrayList<>();
     protected SQLiteDatabase db;
 
@@ -226,7 +227,8 @@ public class MainActivity extends AppCompatActivity {
                         imgLike.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Log.d("ID", "ID: " + v.getId());
+                                filmId = v.getId();
+                                new storeFavourite().execute();
                             }
                         });
 
@@ -259,6 +261,44 @@ public class MainActivity extends AppCompatActivity {
             }
             catch(Exception e) {
 
+            }
+        }
+    }
+
+    class storeFavourite extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... Params)  {
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .url("http://api.themoviedb.org/3/movie/" + filmId + "?api_key=1888c83e4f4bbe98ecf4973b7db0f7c4")
+                    .build();
+
+            try {
+                Response response = client.newCall(request).execute();
+                return response.body().string();
+            }
+            catch (IOException e) {
+
+            }
+            catch (Exception e) {
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result != null) {
+                try {
+                    JSONObject film = new JSONObject(result);
+
+                    Log.d("Film id", "Title: " + filmId);
+                    Log.d("Film title", film.getString("title"));
+
+                } catch (JSONException e) {
+
+                }
             }
         }
     }
