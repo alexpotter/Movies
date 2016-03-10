@@ -24,6 +24,8 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -217,11 +219,20 @@ public class MainActivity extends AppCompatActivity {
                         Picasso.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w185/" + film.getString("poster_path")).into(imgPoster);
 
                         ImageView imgLike = (ImageView) filmItem.findViewById(R.id.filmLike);
+
+                        // Make me dynamic!
                         imgLike.setImageResource(R.drawable.empty_heart);
+                        imgLike.setId(film.getInt("id"));
+
+                        // Set event listener
+                        imgLike.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Log.d("ID", "ID: " + v.getId());
+                            }
+                        });
 
                         filmList.addView(filmItem);
-
-                        Log.d("DEBUG", film.getString("id"));
                     }
                 }
                 else
