@@ -20,14 +20,6 @@
             android:elevation="4dp"
             android:background="?attr/colorPrimary"/>
 
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="20dp"
-            android:id="@+id/filmRow">
-        </TableRow>
-
     </LinearLayout>
 
 </ScrollView>
