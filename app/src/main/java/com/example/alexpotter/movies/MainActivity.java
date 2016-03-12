@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         while (c.moveToNext()) {
-            View filmItem = LayoutInflater.from(MainActivity.this).inflate(R.layout.favourite, favouriteList, false);
+            final View filmItem = LayoutInflater.from(MainActivity.this).inflate(R.layout.favourite, favouriteList, false);
 
             TextView title  = (TextView) filmItem.findViewById(R.id.favouriteTitle);
             title.setText(c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_TITLE)));
@@ -95,12 +95,14 @@ public class MainActivity extends AppCompatActivity {
             ImageView imgPoster = (ImageView) filmItem.findViewById(R.id.favouritePoster);
             Picasso.with(getApplicationContext()).load(c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_IMAGE_URL))).into(imgPoster);
 
-            filmItem.setId(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID));
+            Log.d("DEBUG", "" + c.getInt(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID)));
+            filmItem.setId(c.getInt(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID)));
 
             filmItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("ID", "" + v.getId());
+                    filmId = v.getId();
+                    new viewSelectedFilm().execute();
                 }
             });
 
@@ -177,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Cursor c = db.query(
                             FavouritesSchema.Favourite.TABLE_NAME,
-                            new String[]{FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID},
+                            new String[]{ FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID },
                             FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID + " =? ",
                             new String[]{String.valueOf(Integer.toString(v.getId()))},
                             null,
@@ -375,6 +377,20 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             if (result != null) {
                 try {
+                    setContentView(R.layout.display_films);
+
+                    Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar1);
+                    setSupportActionBar(myToolbar);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+                    myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //What to do on back clicked
+                            myActivity();
+                        }
+                    });
+
                     LinearLayout filmList = (LinearLayout)findViewById(R.id.tableLayout);
                     JSONObject film = new JSONObject(result);
                     displayFilm(film, filmList);
