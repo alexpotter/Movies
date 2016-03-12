@@ -96,13 +96,11 @@ public class MainActivity extends AppCompatActivity {
             Picasso.with(getApplicationContext()).load(c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_IMAGE_URL))).into(imgPoster);
 
             filmItem.setId(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID));
-            filmItem.setClickable(true);
 
             filmItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Log.d("ID", "" + v.getId());
-                    Log.d("DEBUG", "CLICKED");
+                    Log.d("ID", "" + v.getId());
                 }
             });
 

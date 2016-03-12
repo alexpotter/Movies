@@ -1,73 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:id="@+id/movieContainer"
+    android:background="#ffffff"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:rowCount="5"
+    android:columnCount="2"
+    android:scrollbars="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <GridLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:contentDescription="@string/app_name"
+        android:layout_row="0"
+        android:layout_column="0"
         android:layout_height="wrap_content"
-        android:id="@+id/movieContainer"
-        android:background="#ffffff"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:rowCount="5"
-        android:columnCount="2"
-        android:scrollbars="vertical">
+        android:layout_width="wrap_content"
+        android:paddingBottom="10dp"
+        android:id="@+id/filmPoster"/>
 
-        <ImageView
-            android:contentDescription="@string/app_name"
-            android:layout_row="0"
-            android:layout_column="0"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:paddingBottom="10dp"
-            android:id="@+id/filmPoster"/>
+    <TextView
+        android:id="@+id/filmTitle"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:textSize="14pt"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:text="" />
 
-        <TextView
-            android:id="@+id/filmTitle"
-            android:layout_row="0"
-            android:layout_column="1"
-            android:textSize="14pt"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:text="" />
+    <TextView
+        android:id="@+id/filmPlot"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:textSize="10pt"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingBottom="10dp"
+        android:text="" />
 
-        <TextView
-            android:id="@+id/filmPlot"
-            android:layout_row="1"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
-            android:textSize="10pt"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:paddingBottom="10dp"
-            android:text="" />
+    <TextView
+        android:id="@+id/filmYear"
+        android:layout_row="2"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:textSize="10pt"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingBottom="10dp"
+        android:text="" />
 
-        <TextView
-            android:id="@+id/filmYear"
-            android:layout_row="2"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
-            android:textSize="10pt"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:paddingBottom="10dp"
-            android:text="" />
+    <ImageView
+        android:contentDescription="@string/app_name"
+        android:layout_row="3"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_height="40dp"
+        android:layout_width="40dp"
+        android:paddingBottom="10dp"
+        android:id="@+id/filmLike"/>
 
-        <ImageView
-            android:contentDescription="@string/app_name"
-            android:layout_row="3"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
-            android:layout_height="40dp"
-            android:layout_width="40dp"
-            android:paddingBottom="10dp"
-            android:id="@+id/filmLike"/>
-
-    </GridLayout>
-</ScrollView>
+</GridLayout>
