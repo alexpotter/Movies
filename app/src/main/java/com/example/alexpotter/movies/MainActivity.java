@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -47,10 +46,6 @@ public class MainActivity extends AppCompatActivity {
         // Gets the data repository in write mode
         FavouritesSchema.Favourite.FavouriteDbHelper mDbHelper = new FavouritesSchema.Favourite.FavouriteDbHelper(this);
         db = mDbHelper.getWritableDatabase();
-
-        if (db.isOpen()) {
-            Log.d("Debug", "Successfully connected to favourites db");
-        }
 
         myActivity();
     }
@@ -95,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
             ImageView imgPoster = (ImageView) filmItem.findViewById(R.id.favouritePoster);
             Picasso.with(getApplicationContext()).load(c.getString(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_IMAGE_URL))).into(imgPoster);
 
-            Log.d("DEBUG", "" + c.getInt(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID)));
             filmItem.setId(c.getInt(c.getColumnIndex(FavouritesSchema.Favourite.COLUMN_NAME_FILM_ID)));
 
             filmItem.setOnClickListener(new View.OnClickListener() {
