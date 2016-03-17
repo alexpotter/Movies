@@ -117,8 +117,8 @@ public class ListFilmsActivity extends AppCompatActivity {
                     myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //What to do on back clicked
-                            // Intent
+                            Intent main = new Intent(ListFilmsActivity.this, MainActivity.class);
+                            ListFilmsActivity.this.startActivity(main);
                         }
                     });
 
