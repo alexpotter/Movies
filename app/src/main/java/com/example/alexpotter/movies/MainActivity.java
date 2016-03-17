@@ -1,6 +1,5 @@
 package com.example.alexpotter.movies;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -48,10 +47,6 @@ public class MainActivity extends AppCompatActivity {
         FavouritesSchema.Favourite.FavouriteDbHelper mDbHelper = new FavouritesSchema.Favourite.FavouriteDbHelper(this);
         db = mDbHelper.getWritableDatabase();
 
-        myActivity();
-    }
-
-    private void myActivity() {
         setContentView(R.layout.activity_main);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -97,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     filmId = v.getId();
-                    //new viewSelectedFilm().execute();
+                    Intent favourite = new Intent(MainActivity.this, DisplayFavouriteActivity.class);
+                    favourite.putExtra("filmId", filmId);
+                    MainActivity.this.startActivity(favourite);
                 }
             });
 
@@ -184,55 +181,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-//    class viewSelectedFilm extends AsyncTask<Void, Void, String> {
-//        @Override
-//        protected String doInBackground(Void... Params)  {
-//            OkHttpClient client = new OkHttpClient();
-//
-//            Request request = new Request.Builder()
-//                    .url("http://api.themoviedb.org/3/movie/" + filmId + "?api_key=1888c83e4f4bbe98ecf4973b7db0f7c4")
-//                    .build();
-//
-//            try {
-//                Response response = client.newCall(request).execute();
-//                return response.body().string();
-//            }
-//            catch (IOException e) {
-//
-//            }
-//            catch (Exception e) {
-//
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            if (result != null) {
-//                try {
-//                    setContentView(R.layout.display_films);
-//
-//                    Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar1);
-//                    setSupportActionBar(myToolbar);
-//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//
-//                    myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            //What to do on back clicked
-//                            myActivity();
-//                        }
-//                    });
-//
-//                    LinearLayout filmList = (LinearLayout)findViewById(R.id.tableLayout);
-//                    JSONObject film = new JSONObject(result);
-//                    displayFilm(film, filmList);
-//                }
-//                catch (JSONException e) {
-//
-//                }
-//            }
-//        }
-//    }
 }
