@@ -1,5 +1,7 @@
 package com.example.alexpotter.movies;
 
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,94 +21,116 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ListFilmsActivity extends AppCompatActivity {
+    protected String movieTitle;
+    protected SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        movieTitle = intent.getStringExtra("movieTitle");
+
+        // Gets the data repository in write mode
+        FavouritesSchema.Favourite.FavouriteDbHelper mDbHelper = new FavouritesSchema.Favourite.FavouriteDbHelper(this);
+        db = mDbHelper.getWritableDatabase();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.display_films);
 
-        class getFilmsFromSearch extends AsyncTask<Void, Void, String> {
-            @Override
-            protected String doInBackground(Void... params) {
-                OkHttpClient client = new OkHttpClient();
+        new getFilmsFromSearch().execute();
+    }
 
-                Request request = new Request.Builder()
-                        .url("https://api.themoviedb.org/3/search/movie?api_key=1888c83e4f4bbe98ecf4973b7db0f7c4&query=" + movieTitle)
-                        .build();
+    class getFilmsFromSearch extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            OkHttpClient client = new OkHttpClient();
 
-                try {
-                    Response response = client.newCall(request).execute();
-                    return response.body().string();
-                }
-                catch (IOException e) {
+            Request request = new Request.Builder()
+                    .url("https://api.themoviedb.org/3/search/movie?api_key=1888c83e4f4bbe98ecf4973b7db0f7c4&query=" + movieTitle)
+                    .build();
 
-                }
-                catch (Exception e) {
-
-                }
-                return null;
+            try {
+                Response response = client.newCall(request).execute();
+                return response.body().string();
             }
+            catch (IOException e) {
 
-            @Override
-            protected void onPostExecute(String results) {
-                try {
-                    JSONObject jsonObject = new JSONObject(results);
+            }
+            catch (Exception e) {
 
-                    //extracting data array from json string
-                    JSONArray films = jsonObject.getJSONArray("results");
+            }
+            return null;
+        }
 
-                    if (films.length() > 0) {
-                        setContentView(R.layout.display_films);
-                        LinearLayout filmList = (LinearLayout)findViewById(R.id.tableLayout);
+        @Override
+        protected void onPostExecute(String results) {
+            try {
+                JSONObject jsonObject = new JSONObject(results);
 
-                        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar1);
-                        setSupportActionBar(myToolbar);
-                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                //extracting data array from json string
+                JSONArray films = jsonObject.getJSONArray("results");
 
-                        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //What to do on back clicked
-                                myActivity();
-                            }
-                        });
+                if (films.length() > 0) {
+                    setContentView(R.layout.display_films);
+                    LinearLayout filmList = (LinearLayout)findViewById(R.id.tableLayout);
 
-                        int length = jsonObject.length();
+                    Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar1);
+                    setSupportActionBar(myToolbar);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-                        //loop to get all json objects from data json array
-                        for(int count=0; count<length; count++)
-                        {
-                            final JSONObject film = films.getJSONObject(count);
-
-                            displayFilm(film, filmList);
+                    myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent main = new Intent(ListFilmsActivity.this, MainActivity.class);
+                            ListFilmsActivity.this.startActivity(main);
                         }
-                    }
-                    else
+                    });
+
+                    int length = jsonObject.length();
+
+                    //loop to get all json objects from data json array
+                    for(int count=0; count<length; count++)
                     {
-                        setContentView(R.layout.no_movie_found);
-                        TextView noMovieFound = (TextView)findViewById(R.id.noMovieFound);
+                        final JSONObject jsonFilmObject = films.getJSONObject(count);
 
-                        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar2);
-                        setSupportActionBar(myToolbar);
-                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                        Film film = new Film(
+                                jsonFilmObject.getString("id"),
+                                jsonFilmObject.getString("title"),
+                                jsonFilmObject.getString("overview"),
+                                jsonFilmObject.getString("release_date"),
+                                jsonFilmObject.getString("poster_path")
+                        );
 
-                        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //What to do on back clicked
-                                myActivity();
-                            }
-                        });
+                        film.setDbConnection(db);
 
-                        String error = "No films could be found.";
-                        noMovieFound.setText(error);
+                        filmList.addView(film.buildFilm(ListFilmsActivity.this, getApplicationContext()));
                     }
                 }
-                catch(JSONException e) {
+                else
+                {
+                    setContentView(R.layout.no_movie_found);
+                    TextView noMovieFound = (TextView)findViewById(R.id.noMovieFound);
 
-                }
-                catch(Exception e) {
+                    Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar2);
+                    setSupportActionBar(myToolbar);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+                    myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //What to do on back clicked
+                            // Intent
+                        }
+                    });
+
+                    String error = "No films could be found.";
+                    noMovieFound.setText(error);
                 }
+            }
+            catch(JSONException e) {
+
+            }
+            catch(Exception e) {
+
             }
         }
     }
